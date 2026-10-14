@@ -1,0 +1,239 @@
+{
+  "info": {
+    "name": "Jajal Medical Case Management API",
+    "_postman_id": "c1f7b822-8df2-4ce0-8df7-b080bf595f92",
+    "description": "Postman / Thunder Client collection for Jajal Medical Case Management System. Includes authentication, CRUD endpoints, role checks, and pagination.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth - 1. Login (Admin)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"admin@jajalmedical.com\",\n  \"password\": \"Admin@12345\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["login"]
+        }
+      }
+    },
+    {
+      "name": "Auth - 2. Login (Viewer)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"viewer@jajalmedical.com\",\n  \"password\": \"Viewer@12345\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["login"]
+        }
+      }
+    },
+    {
+      "name": "Auth - 3. Login Invalid Credentials (401)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"admin@jajalmedical.com\",\n  \"password\": \"WrongPass!\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["login"]
+        }
+      }
+    },
+    {
+      "name": "Auth - 4. Logout",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/logout",
+          "host": ["{{baseUrl}}"],
+          "path": ["logout"]
+        }
+      }
+    },
+    {
+      "name": "Dashboard - Stats",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/dashboard/stats",
+          "host": ["{{baseUrl}}"],
+          "path": ["dashboard", "stats"]
+        }
+      }
+    },
+    {
+      "name": "Cases - 1. List Cases (Paginated 10/page)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/cases?page=1&per_page=10&search=&status=All&priority=All&sort_by=id&sort_dir=asc",
+          "host": ["{{baseUrl}}"],
+          "path": ["cases"],
+          "query": [
+            { "key": "page", "value": "1" },
+            { "key": "per_page", "value": "10" },
+            { "key": "search", "value": "" },
+            { "key": "status", "value": "All" },
+            { "key": "priority", "value": "All" },
+            { "key": "sort_by", "value": "id" },
+            { "key": "sort_dir", "value": "asc" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Cases - 2. Create Case (Admin / Engineer)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"case_number\": \"CASE-1099\",\n  \"patient_reference\": \"PT-9941\",\n  \"surgeon_name\": \"Dr. Sarah Mitchell\",\n  \"implant_type\": \"Patient-Specific Titanium Mandibular Plate\",\n  \"status\": \"Planning\",\n  \"priority\": \"High\",\n  \"surgery_date\": \"2026-11-25\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/cases",
+          "host": ["{{baseUrl}}"],
+          "path": ["cases"]
+        }
+      }
+    },
+    {
+      "name": "Cases - 3. Create Case Duplicate Failure (422)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"case_number\": \"CASE-0001\",\n  \"patient_reference\": \"PT-9941\",\n  \"surgeon_name\": \"Dr. Sarah Mitchell\",\n  \"implant_type\": \"Titanium Plate\",\n  \"status\": \"Planning\",\n  \"priority\": \"High\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/cases",
+          "host": ["{{baseUrl}}"],
+          "path": ["cases"]
+        }
+      }
+    },
+    {
+      "name": "Cases - 4. Get Case By ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/cases/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["cases", "1"]
+        }
+      }
+    },
+    {
+      "name": "Cases - 5. Update Case (Admin / Engineer)",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"case_number\": \"CASE-0001\",\n  \"patient_reference\": \"PT-9801\",\n  \"surgeon_name\": \"Dr. Sarah Mitchell\",\n  \"implant_type\": \"Titanium Cranial Plate 3D-Custom Modified\",\n  \"status\": \"In Review\",\n  \"priority\": \"High\",\n  \"surgery_date\": \"2026-10-30\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/cases/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["cases", "1"]
+        }
+      }
+    },
+    {
+      "name": "Cases - 6. Delete Case (Admin Only - 403 for Viewer)",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/cases/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["cases", "1"]
+        }
+      }
+    },
+    {
+      "name": "Public Holidays (Nager.Date)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/holidays?year=2026&country=US",
+          "host": ["{{baseUrl}}"],
+          "path": ["holidays"],
+          "query": [
+            { "key": "year", "value": "2026" },
+            { "key": "country", "value": "US" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Automated Tests - Execute Suite",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{baseUrl}}/tests/run",
+          "host": ["{{baseUrl}}"],
+          "path": ["tests", "run"]
+        }
+      }
+    }
+  ]
+}
